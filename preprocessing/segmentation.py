@@ -57,11 +57,3 @@ def segment_cough(x,fs, cough_padding=0.2,min_cough_len=0.2, th_l_multiplier = 0
                 cough_in_progress = True
     
     return coughSegments, cough_mask
-
-def compute_SNR(x, fs):
-    """Compute the Signal-to-Noise ratio of the audio signal x (np.array) with sampling frequency fs (float)"""
-    segments, cough_mask = segment_cough(x,fs)
-    RMS_signal = 0 if len(x[cough_mask])==0 else np.sqrt(np.mean(np.square(x[cough_mask])))
-    RMS_noise = np.sqrt(np.mean(np.square(x[~cough_mask])))
-    SNR = 0 if (RMS_signal==0 or np.isnan(RMS_noise)) else 20*np.log10(RMS_signal/RMS_noise)
-    return SNR

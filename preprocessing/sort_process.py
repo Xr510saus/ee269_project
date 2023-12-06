@@ -44,9 +44,10 @@ path = 'EE 269/dataset/coughvid_20211012/'
 # Covid files
 cfiles = glob.glob(path + 'covid/*')
 cont = []
+counter = 0
 
-# To reduce amount of files needed to work with, grab the first 1000
-for i in range(1000):
+# To reduce amount of files needed to work with, grab the first 1000 coughs
+for i in range(len(cfiles)):
     data, rate = librosa.load(cfiles[i], sr=22050) # Resample each at 22050 Hz
 
     cough_segments, cough_mask = segment_cough(data, rate, cough_padding=0.1)
@@ -55,6 +56,12 @@ for i in range(1000):
         crop = np.resize(seg, (22050)) # Resize so that each will be the same length
         proc, _ = preprocess_cough(crop, rate)
         cont.append(proc)
+        counter += 1
+        if counter == 1000:
+            break
+
+    if counter == 1000:
+        break
 
 np.savetxt(path + 'covid.txt', cont)
 
@@ -62,6 +69,7 @@ np.savetxt(path + 'covid.txt', cont)
 
 hfiles = glob.glob(path + 'healthy/*')
 cont = []
+counter = 0
 
 # To reduce amount of files needed to work with, grab the first 1000
 for i in range(1000):
@@ -73,5 +81,11 @@ for i in range(1000):
         crop = np.resize(seg, (22050)) # Resize so that each will be the same length
         proc, _ = preprocess_cough(crop, rate)
         cont.append(proc)
+        counter += 1
+        if counter == 1000:
+            break
+
+    if counter == 1000:
+        break
 
 np.savetxt(path + 'healthy.txt', cont)
